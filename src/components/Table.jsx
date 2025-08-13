@@ -1,43 +1,46 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { format, differenceInDays } from "date-fns";
 
 export default function BasicTable({ data }) {
   console.log(data);
+
+  const today = new Date();
+  const formattedDate = format(today, "yyyy-MM-dd");
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data?.map((person) => (
-            <TableRow
-              key={person.userId}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {person.firstName}
-              </TableCell>
-              <TableCell align="right">{person.lastName}</TableCell>
-              <TableCell align="right">{person.email}</TableCell>
-              <TableCell align="right">{person.city}</TableCell>
-              {/* <TableCell align="right">{person.registeredAt}</TableCell> */}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className="overflow-x-auto rounded-lg shadow-lg">
+      <table className="min-w-full text-left text-sm text-gray-800">
+        <thead className="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
+          <tr>
+            <th className="px-6 py-3">Name</th>
+            <th className="px-6 py-3 text-right">Email</th>
+            <th className="px-6 py-3 text-right">City</th>
+            <th className="px-6 py-3 text-right">
+              DSR (Days Since Registration)
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+          {data?.map((person) => {
+            const newDate = format(new Date(person.registeredAt), "yyyy-MM-dd");
+
+            return (
+              <tr
+                key={person.userId}
+                className="hover:bg-gray-50 transition-colors duration-150"
+              >
+                <td className="px-6 py-4 font-medium">
+                  {person.firstName} {person.lastName}
+                </td>
+                <td className="px-6 py-4 text-right">{person.email}</td>
+                <td className="px-6 py-4 text-right">{person.city}</td>
+                <td className="px-6 py-4 text-right">
+                  {differenceInDays(formattedDate, newDate)}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
