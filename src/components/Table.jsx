@@ -1,7 +1,11 @@
 import { format, differenceInDays } from "date-fns";
+import { useState } from "react";
 
 export default function BasicTable({ data }) {
-  console.log(data);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState(null);
+  const [sortedData, setSortedData] = useState(data);
+  console.log(sortedData);
 
   const today = new Date();
   const formattedDate = format(today, "yyyy-MM-dd");
@@ -11,7 +15,35 @@ export default function BasicTable({ data }) {
       <table className="min-w-full text-left text-sm text-gray-800">
         <thead className="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
           <tr>
-            <th className="px-6 py-3">Name</th>
+            <th
+              className="px-6 py-3"
+              onClick={() => {
+                if (sortColumn !== "name" || sortDirection === "desc") {
+                  setSortColumn("name");
+                  setSortDirection("asc");
+                  setSortedData(
+                    [...data].sort((a, b) =>
+                      a.firstName
+                        .toLowerCase()
+                        .localeCompare(b.firstName.toLowerCase())
+                    )
+                  );
+                }
+
+                if (sortColumn === "name" && sortDirection === "asc") {
+                  setSortDirection("desc");
+                  setSortedData(
+                    [...data].sort((a, b) =>
+                      b.firstName
+                        .toLowerCase()
+                        .localeCompare(a.firstName.toLowerCase())
+                    )
+                  );
+                }
+              }}
+            >
+              Full Name
+            </th>
             <th className="px-6 py-3 text-right">Email</th>
             <th className="px-6 py-3 text-right">City</th>
             <th className="px-6 py-3 text-right">
@@ -20,7 +52,7 @@ export default function BasicTable({ data }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {data?.map((person) => {
+          {sortedData?.map((person) => {
             const newDate = format(new Date(person.registeredAt), "yyyy-MM-dd");
 
             return (
