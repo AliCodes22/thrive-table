@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { users } from "../data";
 import BasicTable from "./components/Table";
 
